@@ -1,16 +1,8 @@
-const fs = require('fs');
+const fs = require("fs");
 
-const filePath = process.argv[2];
-
-fs.readFile(filePath, 'utf8', (err, data) => {
-  if (err) {
-    console.error(`Error reading file ${filePath}: ${err}`);
-    return;
-  }
-
+function readAndParseJSON(filePath) {
   try {
-    const jsonData = JSON.parse(data);
-    // TODO: Perform error handling for invalid file format and missing data
+    const jsonData = fs.readFileSync(filePath, "utf8");
     const parsedData = JSON.parse(jsonData);
 
     if (
@@ -22,7 +14,24 @@ fs.readFile(filePath, 'utf8', (err, data) => {
     }
 
     console.log(JSON.stringify(parsedData));
-  } catch (err) {
-    console.error('Invalid JSON file format. Please provide a valid JSON file.');
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      console.log(
+        "Invalid JSON file format. Please provide a valid JSON file."
+      );
+    } else {
+      console.log(`Error reading the file: ${error.message}`);
+    }
   }
-});
+}
+
+if (require.main === module) {
+  const filePath = process.argv[2];
+  if (!filePath) {
+    console.log("Please provide a JSON file path.");
+    return;
+  }
+  readAndParseJSON(filePath);
+}
+
+module.exports = { readAndParseJSON };
