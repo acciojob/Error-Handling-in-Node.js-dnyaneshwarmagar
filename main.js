@@ -11,6 +11,17 @@ fs.readFile(filePath, 'utf8', (err, data) => {
   try {
     const jsonData = JSON.parse(data);
     // TODO: Perform error handling for invalid file format and missing data
+    const parsedData = JSON.parse(jsonData);
+
+    if (
+      typeof parsedData.name === "undefined" ||
+      typeof parsedData.age === "undefined"
+    ) {
+      console.log("Missing required data in the JSON file.");
+      return;
+    }
+
+    console.log(JSON.stringify(parsedData));
   } catch (err) {
     console.error('Invalid JSON file format. Please provide a valid JSON file.');
   }
